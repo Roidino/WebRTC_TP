@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebRTC</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-[#1a1a2e] px-12 py-6 text-white">
+    <header class="text-center text-blue-200">
+        <h2 class="text-3xl font-bold mb-2">BIENVENUE SUR WEebRTC</h2>
+        <h4 class="text-xl font-bold">Passez un appelle Peer To Peer</h4>
+    </header>
+    <main class="flex flex-col">
+        <div class="flex justify-center gap-8 my-4">
+            <div>
+                <h2 class="text-center text-blue-200 font-bold mb-2">Local (Vous)</h2>
+                <video id="videolocal" autoplay playsinline muted class="w-[400px] h-[300px] border-2 rounded-lg border-blue-900 bg-black"></video>
+            </div>
+            <div>
+                <h2 class="text-center text-blue-200 font-bold mb-2">Distant (Pair)</h2>
+                <video id="videodistant" autoplay playsinline class="w-[400px] h-[300px] border-2 rounded-lg border-blue-900 bg-black"></video>
+            </div>
+        </div>
+        <div class="flex gap-8 justify-center">
+            <button type="submit" id="btncamera" class="px-4 py-2 rounded-sm bg-blue-700 hover:bg-blue-900 font-bold">Allumer la caméra</button>
+            <button type="submit" id="btnappel" class="px-4 py-2 rounded-sm bg-green-700 hover:bg-green-900 font-bold">Appeler</button>
+            <button type="submit" id="btnraccroche"  class="px-4 py-2 rounded-sm bg-red-700 hover:bg-red-900 font-bold">Raccrocher</button>
+        </div>
+    </main>
+    <footer></footer>
+
+    <script src="client.js"></script>
+</body>
+</html>
