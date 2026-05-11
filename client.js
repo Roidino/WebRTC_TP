@@ -1,19 +1,26 @@
+// Elements HTML
 const videolocal = document.getElementById("videolocal");
 const videodistant = document.getElementById("videodistant");
 const btncamera = document.getElementById("btncamera");
 const btnappel = document.getElementById("btnappel");
 const btnraccroche = document.getElementById("btnraccroche");
 
-const ws = new WebSocket("ws://localhost:8080");
+// Connexion au serveur de signalisation
+const wsUrl = location.hostname === 'localhost'
+  ? 'ws://localhost:8080'
+  : `wss://${location.hostname}`;
+
+const ws = new WebSocket(wsUrl);
 
 let localStream;
-let peerConnection
+let peerConnection;
 
+// Configuration STUN (serveur Google public)
 const config = {
-    iceServers: [{urls: "stun:stun.l.google.com:19320"}]
+    iceServers: [{urls: "stun:stun.l.google.com:19302"}]
 };
 
-
+// Gestion des messages du serveur
 ws.onmessage = async (event) => {
     const text = event.data instanceof Blob ? await event.data.text() : event.data;
 
@@ -47,10 +54,12 @@ btncamera.onclick = async () => {
 btnappel.onclick = async () => {
     createPeerConnection();
 
+    // Ajoute les pistes locales (audio + vidéo)
     localStream.getTracks().forEach(track => {
         peerConnection.addTrack(track, localStream);
     });
 
+    // Crée et envoie l'offre SDP
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
     ws.send(JSON.stringify(offer));
@@ -64,7 +73,7 @@ btnraccroche.onclick = () => {
   peerConnection.close();
   videodistant.srcObject = null;
 
-  btnappel.disabled   = false;
+  btnappel.disabled = false;
   btnraccroche.disabled = true;
   console.log('Appel terminé');
 };
@@ -102,7 +111,7 @@ async function handleOffer(offer) {
   await peerConnection.setLocalDescription(answer);
   ws.send(JSON.stringify(answer));
 
-  btnappel.disabled   = true;
+  btnappel.disabled = true;
   btnraccroche.disabled = false;
   console.log('Réponse envoyée');
 }

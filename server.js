@@ -1,5 +1,29 @@
 const WebSocker = require("ws");
-const wss = new WebSocker.Server({ port: 8080});
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+// Serveur HTTP pour servir les fichiers statiques
+const server = http.createServer((req, res) => {
+  let filePath = '.' + req.url;
+  if (filePath === './') filePath = './index.html';
+
+  const ext = path.extname(filePath);
+  const contentType = ext === '.js' ? 'application/javascript' : 'text/html';
+
+  fs.readFile(filePath, (err, content) => {
+    if (err) {
+      res.writeHead(404);
+      res.end('Fichier introuvable');
+      return;
+    }
+    res.writeHead(200, { 'Content-Type': contentType });
+    res.end(content);
+  });
+});
+
+// Serveur WebSocket sur le même serveur HTTP
+const wss = new WebSocker.Server({ server });
 
 const clients = [];
 
@@ -22,4 +46,6 @@ wss.on("connection", (ws) => {
     });
 });
 
-console.log("Serveur de signalisation démarré");
+server.listen(8080, () => {
+  console.log('Serveur démarré sur http://localhost:8080');
+});
